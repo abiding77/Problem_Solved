@@ -27,8 +27,7 @@ int main() {
 		}
 	}
 	while (!Q.empty()) {
-		pair<int, int> cur = Q.front();
-		Q.pop();
+		pair<int, int> cur = Q.front(); Q.pop();
 		for (int dir = 0; dir < 4; dir++) {
 			int nx = cur.first + dx[dir];
 			int ny = cur.second + dy[dir];
