@@ -1,97 +1,84 @@
-//백준2468 안전영역                                                                
- 
 #include <iostream>
 #include <queue>
+#include <utility>
 #include <vector>
 #include <algorithm>
+
 using namespace std;
- 
+
+int input[102][102];
+int board[102][102];
+bool vis[102][102];
+int dx[4] = { 1,0,-1,0 };
+int dy[4] = { 0,1,0,-1 };
 int N;
-const int MAX = 101;
-int input[MAX][MAX];
-int map[MAX][MAX];
-bool visited[MAX][MAX];
-int dy[] = { 0,0,-1,1 };
-int dx[] = { -1,1,0,0 };
-queue<pair<int, int>> q;
-vector<int> v; //영역 개수 저장 벡터
-int cnt; //영역 개수
- 
-void BFS(int y, int x) {
-    visited[y][x] = true;
-    q.push(make_pair(y, x));
- 
-    while (!q.empty()) {
-        y = q.front().first;
-        x = q.front().second;
-        q.pop();
- 
-        for (int i = 0; i < 4; i++) {
-            int ny = y + dy[i];
-            int nx = x + dx[i];
- 
-            if (ny < 0 || nx < 0 || ny >= N || nx >= N)
-                continue;
-            if (map[ny][nx] && !visited[ny][nx]) {
-                visited[ny][nx] = true;
-                q.push(make_pair(ny, nx));
-            }
-        }
-    }
+int cnt;
+queue<pair<int, int>> Q;
+vector<int> ans;
+void BFS(int i, int j) {
+	Q.push({ i,j });
+	vis[i][j] = true;
+	while (!Q.empty()) {
+		pair<int, int> cur = Q.front(); Q.pop();
+		for (int dir = 0; dir < 4; dir++) {
+			int nx = cur.first + dx[dir];
+			int ny = cur.second + dy[dir];
+			if (nx >= N || nx < 0 || ny >= N || ny < 0) continue;
+			//if (board[nx][ny] == 0 || vis[nx][ny]) continue;
+			if (board[nx][ny] && !vis[nx][ny]) {
+				vis[nx][ny] = true;
+				Q.push({ nx,ny });
+			}
+		}
+	}
 }
- 
 void reset() {
-    for (int i = 0; i < N; i++) {
-        for (int j = 0; j < N; j++) {
-            map[i][j] = 0;
-            visited[i][j] = 0;
-        }
-    }
-    cnt = 0;
+	for (int i = 0; i < N; i++) {
+		for (int j = 0; j < N; j++) {
+			board[i][j] = 0;
+			vis[i][j] = false;
+		}
+	}
+
+	cnt = 0;
 }
- 
 int main() {
-    int maxHeight = -1;
-    cin >> N;
-    for (int i = 0; i < N; i++) {
-        for (int j = 0; j < N; j++) {
-            cin >> input[i][j];
-            if (input[i][j] > maxHeight) {
-                maxHeight = input[i][j];
-            }
-        }
-    }
- 
-    for (int h = 1; h <= maxHeight; h++) {
-        /*h미만 물에 잠김*/
- 
-        /*h미만=0 h이상=1 */
-        for (int i = 0; i < N; i++) {
-            for (int j = 0; j < N; j++) {
-                if (input[i][j] < h) {
-                    map[i][j] = 0;
-                }
-                else {
-                    map[i][j] = 1;
-                }
-            }
-        }
- 
-        /*BFS 영역 개수 구하기*/
-        for (int i = 0; i < N; i++) {
-            for (int j = 0; j < N; j++) {
-                if (map[i][j] && !visited[i][j]) {
-                    BFS(i, j);
-                    cnt++;
-                }
-            }
-        }
-        v.push_back(cnt);
-        
-        /*초기화*/
-        reset();
-    }
- 
-    sort(v.begin(), v.end()); //오름차순 정렬
-    cout << v[v.size() - 1];  //최댓값 출력
+	ios::sync_with_stdio(0);
+	cin.tie(0);
+	cout.tie(0);
+	int maxHeight = -1;
+	cin >> N;
+	for (int i = 0; i < N; i++) {
+		for (int j = 0; j < N; j++) {
+			cin >> input[i][j];
+			if (input[i][j] > maxHeight)
+				maxHeight = input[i][j];
+		}
+	}
+	for (int h = 1; h <= maxHeight; h++) {
+		for (int i = 0; i < N; i++) {
+			for (int j = 0; j < N; j++) {
+				if (input[i][j] < h) {
+					board[i][j] = 0;
+				}
+				else {
+					board[i][j] = 1;
+				}
+			}
+		}
+		for (int i = 0; i < N; i++) {
+			for (int j = 0; j < N; j++) {
+				//if (board[i][j] == 0 || vis[i][j]) continue;
+				if (board[i][j] && !vis[i][j]) {
+					BFS(i, j);
+					cnt++;
+				}
+			}
+		}
+		ans.push_back(cnt);
+
+		reset();
+	}
+	sort(ans.begin(), ans.end());
+	cout << ans[ans.size() - 1];
 }
