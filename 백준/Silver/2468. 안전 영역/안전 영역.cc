@@ -24,11 +24,9 @@ void BFS(int i, int j) {
 			int nx = cur.first + dx[dir];
 			int ny = cur.second + dy[dir];
 			if (nx >= N || nx < 0 || ny >= N || ny < 0) continue;
-			//if (board[nx][ny] == 0 || vis[nx][ny]) continue;
-			if (board[nx][ny] && !vis[nx][ny]) {
-				vis[nx][ny] = true;
-				Q.push({ nx,ny });
-			}
+			if (board[nx][ny] == 0 || vis[nx][ny]) continue;
+			vis[nx][ny] = true;
+			Q.push({ nx,ny });
 		}
 	}
 }
@@ -68,11 +66,9 @@ int main() {
 		}
 		for (int i = 0; i < N; i++) {
 			for (int j = 0; j < N; j++) {
-				//if (board[i][j] == 0 || vis[i][j]) continue;
-				if (board[i][j] && !vis[i][j]) {
-					BFS(i, j);
-					cnt++;
-				}
+				if (board[i][j] == 0 || vis[i][j]) continue;	
+				BFS(i, j);
+				cnt++;		
 			}
 		}
 		ans.push_back(cnt);
