@@ -14,17 +14,17 @@ class Solution {
         for(int i=0; i<board.length; i++){
             for(int j=0; j<board[i].length(); j++){
                 if(board[i].charAt(j) == 'P'){
-                    if(!BFS(board,i,j)) return 0;
+                    if(!BFS(board,i,j)) return 0; // 거리두기 지키지 않으면 0
                 }
             }
         }
-        return 1;
+        return 1; // 지키면 1
     }
-    public boolean BFS(String[] board, int x, int y){
-        Queue<Node> Q = new LinkedList<>();
+    public boolean BFS(String[] board, int x , int y){
         boolean[][] visited = new boolean[board.length][board.length];
-        Q.offer(new Node(x,y));
+        Queue<Node> Q = new LinkedList<>();
         visited[x][y] = true;
+        Q.offer(new Node(x,y));
         while(!Q.isEmpty()){
             int curX = Q.peek().x;
             int curY = Q.peek().y;
@@ -33,15 +33,15 @@ class Solution {
                 int nx = curX + dx[i];
                 int ny = curY + dy[i];
                 int d = Math.abs(x-nx) + Math.abs(y-ny);
-                if(nx < 0 || ny < 0 || nx>=5 || ny>=5) continue;
+                if(nx < 0 || ny < 0 || nx >= 5 || ny>=5) continue;
                 if(visited[nx][ny] || d > 2) continue;
                 
                 visited[nx][ny] = true;
                 if(board[nx].charAt(ny) == 'X') continue;
                 else if(board[nx].charAt(ny) == 'P') return false;
                 else Q.offer(new Node(nx,ny));
-                }
             }
+        }
         return true;
     }
     public class Node {
